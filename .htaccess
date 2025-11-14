@@ -1,0 +1,18 @@
+# Включение mod_rewrite
+RewriteEngine On
+
+# Базовый путь для поддиректории (автоматически определяется)
+RewriteBase /ipr2/
+
+# Перенаправление всех запросов на index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Установка заголовков для CORS (опционально, если не работает через PHP)
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, X-API-Key"
+</IfModule>
+
