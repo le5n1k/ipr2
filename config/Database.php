@@ -1,7 +1,4 @@
 <?php
-/**
- * Класс для подключения к базе данных
- */
 class Database {
     private $host = '127.0.0.1';
     private $port = '3307';
@@ -9,11 +6,6 @@ class Database {
     private $username = 'root';
     private $password = '';
     private $conn;
-
-    /**
-     * Получить подключение к базе данных
-     * @return PDO|null
-     */
     public function getConnection() {
         $this->conn = null;
 
