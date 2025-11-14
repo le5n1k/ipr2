@@ -1,7 +1,4 @@
 <?php
-/**
- * Модель для работы с таблицей courses
- */
 class CourseModel {
     private $conn;
     private $table_name = 'courses';
@@ -10,22 +7,12 @@ class CourseModel {
         $this->conn = $db;
     }
 
-    /**
-     * Получить все курсы
-     * @return array
-     */
     public function getAll() {
         $query = "SELECT id, title, instructor, duration_hours, price FROM " . $this->table_name . " ORDER BY id DESC";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
     }
-
-    /**
-     * Получить курс по ID
-     * @param int $id
-     * @return array|false
-     */
     public function getById($id) {
         $query = "SELECT id, title, instructor, duration_hours, price FROM " . $this->table_name . " WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -38,14 +25,7 @@ class CourseModel {
 
         return false;
     }
-
-    /**
-     * Создать новый курс
-     * @param array $data
-     * @return array|false
-     */
     public function create($data) {
-        // Валидация обязательных полей
         if (empty($data['title']) || empty($data['instructor'])) {
             return false;
         }
@@ -55,8 +35,6 @@ class CourseModel {
                   VALUES (:title, :instructor, :duration_hours, :price)";
 
         $stmt = $this->conn->prepare($query);
-
-        // Санитизация данных
         $title = htmlspecialchars(strip_tags($data['title']));
         $instructor = htmlspecialchars(strip_tags($data['instructor']));
         $duration_hours = isset($data['duration_hours']) ? (int)$data['duration_hours'] : 0;
@@ -75,14 +53,7 @@ class CourseModel {
         return false;
     }
 
-    /**
-     * Обновить курс
-     * @param int $id
-     * @param array $data
-     * @return array|false
-     */
     public function update($id, $data) {
-        // Проверяем существование курса
         $existing = $this->getById($id);
         if (!$existing) {
             return false;
@@ -97,7 +68,6 @@ class CourseModel {
 
         $stmt = $this->conn->prepare($query);
 
-        // Санитизация данных
         $title = htmlspecialchars(strip_tags($data['title'] ?? $existing['title']));
         $instructor = htmlspecialchars(strip_tags($data['instructor'] ?? $existing['instructor']));
         $duration_hours = isset($data['duration_hours']) ? (int)$data['duration_hours'] : (int)$existing['duration_hours'];
@@ -116,13 +86,7 @@ class CourseModel {
         return false;
     }
 
-    /**
-     * Удалить курс
-     * @param int $id
-     * @return bool
-     */
     public function delete($id) {
-        // Проверяем существование курса
         $existing = $this->getById($id);
         if (!$existing) {
             return false;
